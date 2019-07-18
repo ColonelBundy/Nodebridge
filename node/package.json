@@ -1,0 +1,28 @@
+{
+  "name": "nodebridge",
+  "version": "1.0.0",
+  "description": "bridge between node and .net core",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist/*",
+    "watch": "nodemon",
+    "watch-debug": "nodemon --inspect"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "author": "Colonelbundy <colonelbundy@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.6.6",
+    "nodemon": "^1.19.1",
+    "rimraf": "^2.6.3",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "stoppable": "^1.1.0"
+  }
+}

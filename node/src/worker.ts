@@ -6,7 +6,7 @@ const dynamicRequire: (name: string) => any = eval('require');
 
 parentPort.on('message', async (message: BodyData) => {
   try {
-    const module = dynamicRequire(
+    const module: Function[] = dynamicRequire(
       path.resolve(workerData['workingdir'], message.module)
     );
     const opt: Function = module[message.opt];
@@ -17,7 +17,9 @@ parentPort.on('message', async (message: BodyData) => {
       );
     }
 
-    const response = await Promise.resolve(opt.apply(null, [...message.data]));
+    const response: object | string = await Promise.resolve(
+      opt.apply(null, [...message.data])
+    );
 
     parentPort.postMessage(response);
   } catch (ex) {

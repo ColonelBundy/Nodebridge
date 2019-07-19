@@ -1,10 +1,11 @@
 import './util/OverrideStdOutputs';
 import * as http from 'http';
 import { AddressInfo } from 'net';
-import stoppable from 'stoppable';
-import { Worker, parentPort, workerData } from 'worker_threads';
+import stoppable from './util/Stoppable';
+import { Worker } from 'worker_threads';
 import * as path from 'path';
-const args: [] = require('minimist')(process.argv.slice(2));
+import { parseArgs } from './util/ArgsUtil';
+const args: [] = parseArgs(process.argv.slice(2));
 
 export interface BodyData {
   opt: string;

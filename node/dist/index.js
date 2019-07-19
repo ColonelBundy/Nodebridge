@@ -20,10 +20,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./util/OverrideStdOutputs");
 const http = __importStar(require("http"));
-const stoppable_1 = __importDefault(require("stoppable"));
+const Stoppable_1 = __importDefault(require("./util/Stoppable"));
 const worker_threads_1 = require("worker_threads");
 const path = __importStar(require("path"));
-const args = require('minimist')(process.argv.slice(2));
+const ArgsUtil_1 = require("./util/ArgsUtil");
+const args = ArgsUtil_1.parseArgs(process.argv.slice(2));
 class Server {
     constructor(parentPid, workingdir, port = 0, instances = 0) {
         this.Workers = [];
@@ -39,7 +40,7 @@ class Server {
         this.Pid = parentPid;
         this.Workingdir = workingdir;
         this.Instances = instances > 0 ? instances : require('os').cpus().length;
-        this.Server = stoppable_1.default(http.createServer(this.handler.bind(this)));
+        this.Server = Stoppable_1.default(http.createServer(this.handler.bind(this)));
     }
     listen() {
         this.Server.listen(this.Port, 'localhost', () => {

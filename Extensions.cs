@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,16 +19,25 @@ namespace Nodebridge
         /// <returns>IServiceCollection</returns>
         public static IServiceCollection AddNodeBridge(this IServiceCollection serviceCollection, Action<InvokeOptions> options = null)
         {
-            var config = new InvokeOptions();
-            options.Invoke(config);
+            serviceCollection.AddSingleton(typeof(Bridge), serviceProvider => {
+                var config = new InvokeOptions();
+                var lifetime = serviceProvider.GetService<IApplicationLifetime>();
+                options.Invoke(config);
 
-            // Get current logger if none was supplied.
-            if (config.Logger == null)
-            {
-                config.Logger = serviceCollection.BuildServiceProvider().GetService<ILogger>();
-            }
+                CancellationToken stoppingToken;
 
-            serviceCollection.AddSingleton(new Bridge(config));
+                // Get current logger if none was supplied.
+                if (config.Logger == null)
+                {
+                    config.Logger = serviceProvider.GetService<ILogger>();
+                }
+
+                if (lifetime != null) {
+
+                }
+
+                return new Bridge(config, stoppingToken);
+            });
 
             return serviceCollection;
         }

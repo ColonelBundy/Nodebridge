@@ -5,15 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="node\dist\index.js" />
-    <None Remove="node\dist\util\OverrideStdOutputs.js" />
-    <None Remove="node\dist\worker.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="node\dist\index.js" />
-    <Content Include="node\dist\util\OverrideStdOutputs.js" />
-    <Content Include="node\dist\worker.js" />
+    <None Remove="node_modules\**\*" />
+    <EmbeddedResource Include="node\dist\**\*" />
   </ItemGroup>
 
   <ItemGroup>

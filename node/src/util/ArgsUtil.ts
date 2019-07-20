@@ -4,7 +4,7 @@ export function parseArgs(args: string[]): any {
   let currentKey = null;
   args.forEach(arg => {
     if (arg.indexOf('--') === 0) {
-      const argName = arg.substring(2);
+      const argName = arg.substring(2).toLowerCase();
       result[argName] = undefined;
       currentKey = argName;
     } else if (currentKey) {

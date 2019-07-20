@@ -2,12 +2,9 @@
   "name": "nodebridge",
   "version": "1.0.0",
   "description": "bridge between node and .net core",
-  "main": "index.js",
   "scripts": {
-    "build": "npm run clean && tsc",
-    "clean": "rimraf dist/*",
-    "watch": "nodemon",
-    "watch-debug": "nodemon --inspect"
+    "build": "webpack --mode production",
+    "build-dev": "webpack --mode development"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -15,11 +12,12 @@
   "author": "Colonelbundy <colonelbundy@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^12.6.6",
-    "nodemon": "^1.19.1",
-    "rimraf": "^2.6.3",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "@types/node": "^12.6.8",
+    "terser-webpack-plugin": "^1.3.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
   },
   "dependencies": {}
 }

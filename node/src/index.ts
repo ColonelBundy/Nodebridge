@@ -21,9 +21,16 @@ class Server {
   private Workers: Worker[] = [];
   private Instances = 0;
   private Workingdir: string;
+  private WorkerPath: string;
   private willClose: boolean = false;
 
-  constructor(parentPid: number, workingdir: string, port = 0, instances = 0) {
+  constructor(
+    parentPid: number,
+    workingdir: string,
+    port = 0,
+    instances = 0,
+    workerPath = null
+  ) {
     if (!parentPid) {
       throw new Error('Parentpid is null');
     }
@@ -32,9 +39,14 @@ class Server {
       throw new Error('no working dir');
     }
 
+    if (!workerPath) {
+      throw new Error('no worker');
+    }
+
     this.Port = port;
     this.Pid = parentPid;
     this.Workingdir = workingdir;
+    this.WorkerPath = workerPath;
     this.Instances = instances > 0 ? instances : require('os').cpus().length;
     this.Server = stoppable(http.createServer(this.handler.bind(this)));
   }
@@ -161,7 +173,7 @@ class Server {
   }
 
   private CreateWorker() {
-    const worker = new Worker(path.join(__dirname, 'worker.js'), {
+    const worker = new Worker(this.WorkerPath, {
       workerData: { workingdir: this.Workingdir }
     });
 
@@ -186,5 +198,6 @@ new Server(
   args['pid'],
   args['workingdir'],
   args['port'],
-  args['instances']
+  args['instances'],
+  args['workerpath']
 ).listen();

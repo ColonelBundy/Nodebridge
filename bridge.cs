@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.AspNetCore.NodeServices;
 
 namespace Nodebridge
 {
@@ -64,6 +65,7 @@ namespace Nodebridge
         private readonly InvokeOptions _options;
         private Process _nodeProcess;
         private readonly ILogger _logger;
+        private CancellationToken _stoppingToken;
 
         private int _port;
         private string _addr;
@@ -73,14 +75,15 @@ namespace Nodebridge
         /// Create a new bridge
         /// </summary>
         /// <param name="options"></param>
-        public Bridge(InvokeOptions options)
+        public Bridge(InvokeOptions options, CancellationToken stoppingToken)
         {
             _client = new HttpClient();
             _options = options;
+            _stoppingToken = stoppingToken;
             _logger = options.Logger;
 
             // Start the bridge.
-            Start("./node/dist/index.js");
+            Start();
         }
 
         /// <summary>
@@ -157,12 +160,14 @@ namespace Nodebridge
         /// Start the process and start listening to the output.
         /// </summary>
         /// <param name="module">worker implementation</param>
-        internal void Start(string module)
+        internal void Start()
         {
             if (!_started)
             {
                 var pid = Process.GetCurrentProcess().Id;
                 string extra = null;
+                string workerpath = new StringAsTempFile(EmbeddedResourceReader.Read(typeof(Bridge), "/node/dist/worker.js"), _stoppingToken).FileName;
+                string modulePath = new StringAsTempFile(EmbeddedResourceReader.Read(typeof(Bridge), "/node/dist/index.js"), _stoppingToken).FileName;
 
                 if (_options.Port != null)
                 {
@@ -178,7 +183,7 @@ namespace Nodebridge
                 // Using experimental-worker flag since it's in beta.
                 var proc = new ProcessStartInfo("node")
                 {
-                    Arguments = $"--experimental-worker {module} --pid {pid} --workingdir {_options.Workingdirectory ?? Directory.GetCurrentDirectory()} {extra ?? string.Empty}",
+                    Arguments = $"--experimental-worker {modulePath} --pid {pid} --workerpath {workerpath} --workingdir {_options.Workingdirectory ?? Directory.GetCurrentDirectory()} {extra ?? string.Empty}",
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,

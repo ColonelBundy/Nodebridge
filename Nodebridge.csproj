@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <CodeAnalysisIgnoreBuiltInRuleSets></CodeAnalysisIgnoreBuiltInRuleSets>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,4 +14,15 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <Target Name="NodeBuild" BeforeTargets="Build">
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js isnt installed or is not on your path VAR." />
+
+    <Message Condition="!Exists('node_modules')" Text="Installing packages" />
+    <Exec Condition="!Exists('node_modules')" Command="npm install --production false" />
+
+    <Exec Command="npm run build" WorkingDirectory="node/" />
+  </Target>
 </Project>

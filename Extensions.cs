@@ -33,7 +33,7 @@ namespace Nodebridge
                 }
 
                 if (lifetime != null) {
-
+                    stoppingToken = lifetime.ApplicationStopping;
                 }
 
                 return new Bridge(config, stoppingToken);

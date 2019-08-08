@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Nodebridge
 {
-    internal static class Bridgextensions
+    public static class Bridgextensions
     {
         /// <summary>
         /// Add the bridge to DI
@@ -48,7 +48,7 @@ namespace Nodebridge
         /// <param name="task"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
-        public static Task WithCancellation(this Task task, CancellationToken cancellationToken)
+        internal static Task WithCancellation(this Task task, CancellationToken cancellationToken)
         {
             return task.IsCompleted
                 ? task
@@ -66,7 +66,7 @@ namespace Nodebridge
         /// <param name="cancellationToken"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns>Task<T></returns>
-        public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
+        internal static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
         {
             return task.IsCompleted
                 ? task

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,9 +17,10 @@ namespace Nodebridge
         /// <returns>IServiceCollection</returns>
         public static IServiceCollection AddNodeBridge(this IServiceCollection serviceCollection, Action<InvokeOptions> options = null)
         {
-            serviceCollection.AddSingleton(typeof(Bridge), serviceProvider => {
+            serviceCollection.AddSingleton(typeof(Bridge), serviceProvider =>
+            {
                 var config = new InvokeOptions();
-                var lifetime = serviceProvider.GetService<IApplicationLifetime>();
+                var lifetime = serviceProvider.GetService<IHostApplicationLifetime>();
                 options.Invoke(config);
 
                 CancellationToken stoppingToken;
@@ -32,7 +31,8 @@ namespace Nodebridge
                     config.Logger = serviceProvider.GetService<ILogger>();
                 }
 
-                if (lifetime != null) {
+                if (lifetime != null)
+                {
                     stoppingToken = lifetime.ApplicationStopping;
                 }
 

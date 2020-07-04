@@ -8,11 +8,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using Microsoft.AspNetCore.NodeServices;
 
 namespace Nodebridge
 {
-    public class InvokeOptions
+    public sealed class InvokeOptions
     {
         /// <summary>
         /// Working directory for your node scripts
@@ -58,14 +57,14 @@ namespace Nodebridge
         public object[] Data { get; set; }
     }
 
-    public class Bridge
+    public sealed class Bridge
     {
         private readonly HttpClient _client;
         private bool _started;
         private readonly InvokeOptions _options;
         private Process _nodeProcess;
         private readonly ILogger _logger;
-        private CancellationToken _stoppingToken;
+        private readonly CancellationToken _stoppingToken;
 
         private int _port;
         private string _addr;
@@ -117,11 +116,13 @@ namespace Nodebridge
         /// <param name="args">arguments for the function</param>
         /// <typeparam name="T">return type, either string or an object</typeparam>
         /// <returns>Task<T></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1068:CancellationToken parameters must come last", Justification = "<Pending>")]
         public Task<T> Invoke<T>(CancellationToken cancellationToken, string module, string opt, params object[] args)
         {
             return DoInvoke<T>(cancellationToken, module, opt, args);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1068:CancellationToken parameters must come last", Justification = "<Pending>")]
         internal async Task<T> DoInvoke<T>(CancellationToken cancellationToken, string module, string opt, params object[] args)
         {
             StringContent post = new StringContent(JsonConvert.SerializeObject(new InvokeParams { Data = args, Module = module, Opt = opt }, jsonSettings), Encoding.UTF8, "application/json");
@@ -211,7 +212,7 @@ namespace Nodebridge
                     // This only happens once, listen for the specific message that tells us the port an addr it's listening on.
                     if (!_started && evt.Data.IndexOf($"[{pid}]") > -1)
                     {
-                        var systemOutput = JsonConvert.DeserializeObject<StartMessage>(evt.Data.Split($"[{pid}] ")[1]);
+                        var systemOutput = JsonConvert.DeserializeObject<StartMessage>(evt.Data.Split(new string[] { $"[{pid}] " }, StringSplitOptions.None)[1]);
 
                         _port = systemOutput.Port;
                         _addr = systemOutput.Addr;

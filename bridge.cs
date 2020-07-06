@@ -180,11 +180,16 @@ namespace Nodebridge
                     extra += $"--instances {_options.Instances}";
                 }
 
+                if (string.IsNullOrEmpty(_options.Workingdirectory))
+                {
+                    _options.Workingdirectory = Directory.GetCurrentDirectory();
+                }
+
                 // Start the node process
                 // Using experimental-worker flag since it's in beta.
                 var proc = new ProcessStartInfo("node")
                 {
-                    Arguments = $"--experimental-worker {modulePath} --pid {pid} --workerpath {workerpath} --workingdir {_options.Workingdirectory ?? Directory.GetCurrentDirectory()} {extra ?? string.Empty}",
+                    Arguments = $"--experimental-worker {modulePath} --pid {pid} --workerpath {workerpath} --workingdir {_options.Workingdirectory} {extra ?? string.Empty}",
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,

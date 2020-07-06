@@ -9,7 +9,7 @@
 > Nodeservices also supports streams where I choose to skip that, if that is needed check the implementation [here](https://github.com/aspnet/JavaScriptServices/blob/bc8984693d4ffe215cc741c97772911c60a2f512/src/Microsoft.AspNetCore.NodeServices/HostingModels/HttpNodeInstance.cs#L96) and create a pr.
 
 ## 📄 Prerequisites
-* node >= 10.5
+* node >= 10.5 (prefer 12.x)
 * .net standard 2.0
 
 ## 🚀 Usage
@@ -28,9 +28,9 @@
 ```C#
     public class ValuesController : Controller
     {
-        private readonly Nodebridge _bridge;
+        private readonly Bridge _bridge;
 
-        public ValuesController(Nodebridge bridge) 
+        public ValuesController(Bridge bridge) 
         {
             _bridge = bridge;
         }

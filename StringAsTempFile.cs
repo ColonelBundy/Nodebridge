@@ -22,7 +22,7 @@ namespace Nodebridge
         /// <param name="applicationStoppingToken">A token that indicates when the host application is stopping.</param>
         public StringAsTempFile(string content, CancellationToken applicationStoppingToken)
         {
-            FileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            FileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".js");
             File.WriteAllText(FileName, content);
 
             // Because .NET finalizers don't reliably run when the process is terminating, also

@@ -21,14 +21,20 @@ namespace Nodebridge
             {
                 var config = new InvokeOptions();
                 var lifetime = serviceProvider.GetService<IHostApplicationLifetime>();
-                options.Invoke(config);
+
+                if (options != null)
+                {
+                    options.Invoke(config);
+                }
 
                 CancellationToken stoppingToken;
 
                 // Get current logger if none was supplied.
                 if (config.Logger == null)
                 {
-                    config.Logger = serviceProvider.GetService<ILogger>();
+                    var factory = serviceProvider.GetService<ILoggerFactory>();
+
+                    config.Logger = factory.CreateLogger<Bridge>();
                 }
 
                 if (lifetime != null)
